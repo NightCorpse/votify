@@ -122,8 +122,8 @@ class SpotifyBaseInterface:
         if len(names) == 1:
             return names[0]
         if len(names) == 2:
-            return f"{names[0]} & {names[1]}"
-        return ", ".join(names[:-1]) + " & " + names[-1]
+            return f"{names[0]}, {names[1]}"
+        return ", ".join(names)
 
     @staticmethod
     def parse_rating(label: str) -> MediaRating:

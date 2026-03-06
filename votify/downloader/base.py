@@ -105,8 +105,8 @@ class SpotifyBaseDownloader:
 
         if file_ext is None:
             sanitized_string = sanitized_string[: self.truncate]
-            if sanitized_string.endswith("."):
-                sanitized_string = sanitized_string[:-1] + ILLEGAL_CHAR_REPLACEMENT
+            # if sanitized_string.endswith("."):
+            #     sanitized_string = sanitized_string[:-1] + ILLEGAL_CHAR_REPLACEMENT
         else:
             if self.truncate is not None:
                 sanitized_string = sanitized_string[: self.truncate - len(file_ext)]
