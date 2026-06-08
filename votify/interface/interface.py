@@ -60,8 +60,7 @@ class SpotifyInterface:
 
         try:
             if (
-                track_data["mediaType"] == "VIDEO"
-                or self.prefer_video
+                self.prefer_video
                 and track_data["associationsV3"]["videoAssociations"]["totalCount"]
             ):
                 return await self.music_video.proccess_media(
