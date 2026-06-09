@@ -272,6 +272,9 @@ class SpotifyBaseDownloader:
 
     @alru_cache()
     async def get_cover_bytes(self, cover_url) -> bytes | None:
+        if not cover_url:
+            return None
+
         async with httpx.AsyncClient() as client:
             response = await client.get(cover_url)
 

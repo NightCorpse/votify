@@ -61,9 +61,11 @@ class SpotifySongInterface(SpotifyAudioInterface):
             album_items,
             media.lyrics.unsynced if media.lyrics else None,
         )
-        media.cover_url = self.parse_cover_url(
-            media.album_metadata["coverArt"]["sources"][0]["url"]
-        )
+        cover_sources = media.album_metadata.get("coverArt", {}).get("sources", [])
+        if cover_sources:
+            media.cover_url = self.parse_cover_url(cover_sources[0]["url"])
+        else:
+            media.cover_url = ""
 
         if not self.skip_stream_info:
             try:
