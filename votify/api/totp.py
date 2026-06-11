@@ -23,15 +23,20 @@ class Totp:
 
     @classmethod
     async def initialize(cls) -> "Totp":
-        async with httpx.AsyncClient() as client:
-            response = await client.get(TOTP_SECRETS_URL)
-        secrets = safe_json(response)
-        if response.status_code != 200 or not secrets:
-            raise VotifyRequestException(
-                name="TOTP secrets",
-                response_status_code=response.status_code,
-                response_text=response.text,
-            )
+        secrets = None
+        try:
+            # timeout=10.0 avoids hanging indefinitely if the host is down or slow
+            async with httpx.AsyncClient() as client:
+                response = await client.get(TOTP_SECRETS_URL, timeout=10.0)
+            secrets = safe_json(response)
+            if response.status_code != 200 or not secrets:
+                secrets = None
+        except Exception:
+            secrets = None
+            
+        if not secrets:
+            logger.debug("Failed to fetch TOTP_SECRETS_URL due to timeout or upstream error. Utilizing fallback secrets.")
+            secrets = {"59":[123,105,79,70,110,59,52,125,60,49,80,70,89,75,80,86,63,53,123,37,117,49,52,93,77,62,47,86,48,104,68,72],"60":[79,109,69,123,90,65,46,74,94,34,58,48,70,71,92,85,122,63,91,64,87,87],"61":[44,55,47,42,70,40,34,114,76,74,50,111,120,97,75,76,94,102,43,69,49,120,118,80,64,78]}
 
         logger.debug(f"Received TOTP secrets: {secrets}")
 
